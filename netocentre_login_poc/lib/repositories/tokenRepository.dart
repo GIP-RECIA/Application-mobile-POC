@@ -13,13 +13,14 @@ class TokenRepository {
       onCreate: (db, version) {
         return db.execute(
           'CREATE TABLE tokens('
-            'AccessToken VARCHAR(255), '
-            'RefreshToken VARCHAR(255), '
-            'TGT VARCHAR(255), '
-            'JSESSIONID VARCHAR(255), '
-            'AccessTokenExpiresDate INT, '
-            'RefreshTokenExpiresDate INT'
-          ')',
+              'AccessToken VARCHAR(255), '
+              'RefreshToken VARCHAR(255), '
+              'TGT VARCHAR(255), '
+              'JSESSIONID VARCHAR(255), '
+              'idPortal VARCHAR(255),'
+              'AccessTokenExpiresDate INT, '
+              'RefreshTokenExpiresDate INT'
+              ')',
         );
       },
       version: 1,
@@ -37,6 +38,7 @@ class TokenRepository {
           'RefreshToken': TokenManager().refreshToken,
           'TGT': TokenManager().TGT,
           'JSESSIONID': TokenManager().JSESSIONID,
+          'idPortal': TokenManager().idPortal,
           'AccessTokenExpiresDate': TokenManager().accessTokenExpiresDate.millisecondsSinceEpoch,
           'RefreshTokenExpiresDate': TokenManager().refreshTokenExpiresDate.millisecondsSinceEpoch
         },
@@ -56,6 +58,7 @@ class TokenRepository {
         'RefreshToken': TokenManager().refreshToken,
         'TGT': TokenManager().TGT,
         'JSESSIONID': TokenManager().JSESSIONID,
+        'idPortal': TokenManager().idPortal,
         'AccessTokenExpiresDate': TokenManager().accessTokenExpiresDate.millisecondsSinceEpoch,
         'RefreshTokenExpiresDate': TokenManager().refreshTokenExpiresDate.millisecondsSinceEpoch
       },
@@ -92,6 +95,7 @@ class TokenRepository {
           TokenManager().setRefreshToken(res.first["RefreshToken"].toString());
           TokenManager().setTGT(res.first["TGT"].toString());
           TokenManager().setJSESSIONID(res.first["JSESSIONID"].toString());
+          TokenManager().setIdPortal(res.first["idPortal"].toString());
           TokenManager().setAccessTokenExpiresDate(DateTime.fromMillisecondsSinceEpoch(res.first["AccessTokenExpiresDate"] as int));
           TokenManager().setRefreshTokenExpiresDate(DateTime.fromMillisecondsSinceEpoch(res.first["RefreshTokenExpiresDate"] as int));
 

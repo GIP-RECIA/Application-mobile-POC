@@ -44,7 +44,7 @@ class PortalService{
       final http.Response res = await client.get(
         request,
         headers: <String, String>{
-          'Cookie': 'JSESSIONID=${TokenManager().JSESSIONID}',
+          'Cookie': 'JSESSIONID=${TokenManager().JSESSIONID}; clusterIDPortail=${TokenManager().idPortal}',
           'Host': BaseUrl().uPortalBaseURL
         },
       );
@@ -117,7 +117,7 @@ class PortalService{
       final http.Response res = await client.get(
         request,
         headers: <String, String>{
-          'Cookie': 'JSESSIONID=${TokenManager().JSESSIONID}',
+          'Cookie': 'JSESSIONID=${TokenManager().JSESSIONID}; clusterIDPortail=${TokenManager().idPortal}',
           'Host': BaseUrl().uPortalBaseURL
         },
       );
@@ -211,7 +211,7 @@ class PortalService{
       final http.Response res = await client.get(
         request,
         headers: <String, String>{
-          'Cookie': 'JSESSIONID=${TokenManager().JSESSIONID}',
+          'Cookie': 'JSESSIONID=${TokenManager().JSESSIONID}; clusterIDPortail=${TokenManager().idPortal}',
           'Host': BaseUrl().uPortalBaseURL
         },
       );
@@ -252,7 +252,7 @@ class PortalService{
       final http.Response res = await client.get(
         request,
         headers: <String, String>{
-          'Cookie': 'JSESSIONID=${TokenManager().JSESSIONID}',
+          'Cookie': 'JSESSIONID=${TokenManager().JSESSIONID}; clusterIDPortail=${TokenManager().idPortal}',
           'Host': BaseUrl().uPortalBaseURL,
           'Authorization': 'Bearer $bearer'
         },
@@ -301,7 +301,7 @@ class PortalService{
       final http.Response res = await client.get(
         request,
         headers: <String, String>{
-          'Cookie': 'JSESSIONID=${TokenManager().JSESSIONID}',
+          'Cookie': 'JSESSIONID=${TokenManager().JSESSIONID}; clusterIDPortail=${TokenManager().idPortal}',
           'Host': BaseUrl().uPortalBaseURL,
           'Authorization': 'Bearer $bearer'
         },
@@ -350,7 +350,7 @@ class PortalService{
       final http.Response res = await client.post(
         request,
         headers: <String, String>{
-          'Cookie': 'JSESSIONID=${TokenManager().JSESSIONID}',
+          'Cookie': 'JSESSIONID=${TokenManager().JSESSIONID}; clusterIDPortail=${TokenManager().idPortal}',
           'Host': BaseUrl().uPortalBaseURL,
           'Authorization': 'Bearer $bearer',
           'Content-Type': 'application/json',
@@ -398,7 +398,7 @@ class PortalService{
       final http.Response res = await client.get(
         request,
         headers: <String, String>{
-          'Cookie': 'JSESSIONID=${TokenManager().JSESSIONID}',
+          'Cookie': 'JSESSIONID=${TokenManager().JSESSIONID}; clusterIDPortail=${TokenManager().idPortal}',
           'Host': BaseUrl().uPortalBaseURL,
           'Authorization': 'Bearer $bearer',
           'Content-Type': 'application/json'
@@ -425,4 +425,47 @@ class PortalService{
     }
   }
 
+
+  Future<String> portalLogout() async {
+    print("portal logout");
+
+    // final client = ignoreSslClient();
+    //
+    // Uri request = Uri.https(
+    //     BaseUrl().uPortalBaseURL,
+    //     "/portail/Logout",
+    //     {}
+    // );
+    //
+    // print("getting portlet request : $request");
+    // print("JSESSIONID=${TokenManager().JSESSIONID}");
+    //
+    // if(await isAuthorizedByUPortal()){
+    //   final http.Response res = await client.get(
+    //     request,
+    //     headers: <String, String>{
+    //       'Cookie': 'JSESSIONID=${TokenManager().JSESSIONID}; clusterIDPortail=${TokenManager().idPortal}',
+    //       'Host': BaseUrl().uPortalBaseURL
+    //     },
+    //   );
+    //
+    //   print(res.statusCode);
+    //   if(res.statusCode == 200) {
+    //     return res.body;
+    //   }
+    //   else{
+    //     print("on a un problème là ! :'(");
+    //     return "";
+    //   }
+    // }
+    // else{
+    //   print("JSESSIONID Empty !");
+    //   return "";
+    // }
+
+    TokenManager().setJSESSIONID("");
+    TokenManager().setIdPortal("", flush: true);
+
+    return "JSESSIONID successfully cleared";
+  }
 }

@@ -15,6 +15,46 @@ class LoginService {
    return IOClient(ioClient);
  }
 
+ /// Parser - JSESSIONID & idPortal
+
+ ({String jsessionid, String idportal}) uPortalLoginParser(HttpClientResponse response){
+
+   String jsessionidCookie = "";
+   String idPortalCookie = "";
+
+   if(response.headers["set-cookie"]!.isNotEmpty){
+
+     List<String> rawCookiesList = response.headers["set-cookie"]!;
+     List<String> cookiesList = [];
+
+     for (var rawCookies in rawCookiesList){
+       cookiesList.addAll(rawCookies.split(";"));
+     }
+
+     print(cookiesList.length);
+     print(cookiesList.toString());
+
+     Iterable<String> jsessionidParser = cookiesList.where((str) => str.contains("JSESSIONID"));
+     Iterable<String> idPortalParser = cookiesList.where((str) => str.contains("clusterIDPortail"));
+     if(jsessionidParser.isNotEmpty){
+       jsessionidCookie = jsessionidParser.first.substring(jsessionidParser.first.indexOf("=")+1);
+       print("JSESSIONID COOKIE : $jsessionidCookie");
+     }
+     else{
+       print("jsessionid not found");
+     }
+     if(idPortalParser.isNotEmpty){
+       idPortalCookie = idPortalParser.first.substring(idPortalParser.first.indexOf("=")+1);
+       print("idPortal COOKIE : $idPortalCookie");
+     }
+     else{
+       print("idPortal not found");
+     }
+   }
+
+   return (jsessionid: jsessionidCookie, idportal: idPortalCookie);
+ }
+
 
  Future<Map<String, dynamic>> login(String OCToken) async {
    print("in login");
@@ -101,10 +141,17 @@ class LoginService {
    return false;
  }
 
+ /// Used to earn the JSESSIONID
  Future<bool> unstackedUPortalLogin() async {
+
+   // init variables
+   int requestCounter = 0;
+   String jsessionidCookie = "";
+   String idPortalCookie = "";
 
    print("=== Start of unstacked uPortal login ===");
 
+   /// Request 0 - initial request
    final client = HttpClient();
    var uri = Uri.https(
        BaseUrl().casBaseURL,
@@ -117,53 +164,53 @@ class LoginService {
    request.followRedirects = false;
    request.headers.add('Cookie', 'TGC=${TokenManager().TGT}');
 
-   /// Request 0 - initial request
-   print("Request 0 :");
-   print(request.headers);
+   print("\nRequest $requestCounter :");
+   print(request.uri.toString());
+   print("request headers : ${request.headers}");
 
+   // Get the first response
    var response = await request.close();
 
-   int requestCounter = 0;
-   String jsessionidCookie = "";
+   // While we get a redirect
+   while (response.isRedirect && requestCounter < 10) {
 
-
-   while (response.isRedirect) {
+     // redirect url
      final location = response.headers.value(HttpHeaders.locationHeader);
+
      if (location != null) {
        uri = uri.resolve(location);
-       request = await client.getUrl(uri);
+
+       //Configure the new request
+       request = await client.getUrl(uri.resolve(location));
+
+       /// PARSE JSESSIONID & idPortal
+
+       print("\nResponse $requestCounter :");
+       print(response.statusCode);
+       print("response headers : ${response.headers["set-cookie"]}");
+       print("response location : $location");
+
+       ({String jsessionid, String idportal}) parsingResult = uPortalLoginParser(response);
+       if(parsingResult.jsessionid != "" ){
+         jsessionidCookie = parsingResult.jsessionid;
+       }
+       if(parsingResult.idportal != "" ){
+         idPortalCookie = parsingResult.idportal;
+       }
 
        request.followRedirects = false;
 
-       /// PARSE JSESSIONID
-
-       print(response.headers["set-cookie"]);
-       if(response.headers["set-cookie"]!.isNotEmpty){
-
-         List<String> cookiesList = response.headers["set-cookie"]!;
-         //List<String> cookiesList = cookies.split(";");
-         print(cookiesList.toString());
-
-         Iterable<String> jsessionidParser = cookiesList.where((str) => str.contains("JSESSIONID"));
-         if(jsessionidParser.isNotEmpty){
-           jsessionidCookie = jsessionidParser.first.substring(jsessionidParser.first.indexOf("=")+1);
-           print("JSESSIONID COOKIE : $jsessionidCookie");
-         }
-         else{
-           print("jsessionid not found");
-         }
-       }
-
        if(jsessionidCookie != ""){
-         request.headers.add('Cookie', "JSESSIONID=$jsessionidCookie");
+         request.cookies.add(Cookie("JSESSIONID", jsessionidCookie));
+       }
+       if(idPortalCookie != ""){
+         request.cookies.add(Cookie("clusterIDPortail", idPortalCookie));
        }
 
-       print("\n");
-       print("Response $requestCounter :");
-       print(response.headers);
-       print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
-       print("Request ${requestCounter + 1} :");
-       print(request.headers);
+       print("\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
+       print("\nRequest ${requestCounter + 1} :");
+       print(request.uri.toString());
+       print("request headers : ${request.headers}");
 
        requestCounter++;
 
@@ -171,39 +218,28 @@ class LoginService {
      }
    }
 
-   /// Parse last JSESSIONID
-   print(response.headers["set-cookie"]);
-   if(response.headers["set-cookie"] != null){
-     List<String> cookies = response.headers["set-cookie"]!;
-     List<String> cookiesList = [];
-     for(var cookie in cookies){
-       cookiesList += cookie.split(";");
-     }
+   /// Last response
+   /// Parse last JSESSIONID & idPortal
+   print("\nResponse $requestCounter :");
+   print(response.statusCode);
+   print("response headers : ${response.headers["set-cookie"]}");
 
-     Iterable<String> jsessionidParser = cookiesList.where((str) => str.contains("JSESSIONID"));
-     if(jsessionidParser.isNotEmpty){
-       jsessionidCookie = jsessionidParser.first.substring(jsessionidParser.first.indexOf("=")+1);
-       print("JSESSIONID COOKIE : $jsessionidCookie");
-     }
-     else{
-       print("jsessionid not found");
-     }
+   ({String jsessionid, String idportal}) parsingResult = uPortalLoginParser(response);
+   if(parsingResult.jsessionid != "" ){
+     jsessionidCookie = parsingResult.jsessionid;
+   }
+   if(parsingResult.idportal != "" ){
+     idPortalCookie = parsingResult.idportal;
    }
 
-   /// Last response
-   print("Response $requestCounter :");
-   print(response.statusCode);
-   print(response.headers);
-
-   /// Redirects stack printing
-   response.redirects.forEach((l) {
-     print(l.location.toString());
-   });
-
    print("Final JSESSIONID : $jsessionidCookie");
+   print("Final idPortal : $idPortalCookie");
 
    print("=== End of unstacked uPortal login ===");
 
+   if(idPortalCookie != ""){
+     TokenManager().setIdPortal(idPortalCookie, flush: true);
+   }
    if(jsessionidCookie != ""){
      TokenManager().setJSESSIONID(jsessionidCookie, flush: true);
      return true;

@@ -6,6 +6,7 @@ class TokenManager {
   String _refreshToken = "";
   String _TGT = "";
   String _JSESSIONID = "";
+  String _idPortal = "";
   DateTime _accessTokenExpiresDate = DateTime.now();
   DateTime _refreshTokenExpiresDate = DateTime.now();
 
@@ -56,6 +57,17 @@ class TokenManager {
     }
   }
 
+
+  String get idPortal => _idPortal;
+
+  setIdPortal(String value, {bool flush = false}) {
+    _idPortal = value;
+
+    if(flush){
+      TokenRepository().flushTokens();
+    }
+  }
+
   DateTime get refreshTokenExpiresDate => _refreshTokenExpiresDate;
 
   setRefreshTokenExpiresDate(DateTime value, {bool flush = false}) {
@@ -76,8 +88,17 @@ class TokenManager {
     }
   }
 
+  void reset() {
+    _accessToken = "";
+    _refreshToken = "";
+    _TGT = "";
+    _JSESSIONID = "";
+    _accessTokenExpiresDate = DateTime.now();
+    _refreshTokenExpiresDate = DateTime.now();
+  }
+
   @override
   String toString() {
-    return 'TokenManager{_accessToken: $_accessToken, _refreshToken: $_refreshToken, _TGT: $_TGT, _JSESSIONID: $_JSESSIONID, _accessTokenExpiresDate: $_accessTokenExpiresDate, _refreshTokenExpiresDate: $_refreshTokenExpiresDate}';
+    return 'TokenManager{_accessToken: $_accessToken, _refreshToken: $_refreshToken, _TGT: $_TGT, _JSESSIONID: $_JSESSIONID, _idPortal: $_idPortal, _accessTokenExpiresDate: $_accessTokenExpiresDate, _refreshTokenExpiresDate: $_refreshTokenExpiresDate}';
   }
 }
