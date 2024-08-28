@@ -58,6 +58,16 @@ class UPortalServiceWebviewState extends State<UPortalServiceWebview> {
     path: "/",
     );
 
+    manager.setCookie(
+    url: WebUri("https://${BaseUrl().uPortalBaseURL}/"),
+    name: "clusterIDPortail",
+    value: TokenManager().idPortal,
+    isHttpOnly: true,
+    isSecure: true,
+    sameSite: HTTPCookieSameSitePolicy.NONE,
+    domain: BaseUrl().uPortalBaseURL,
+    path: "/",
+    );
 
     pullToRefreshController = kIsWeb
         ? null
