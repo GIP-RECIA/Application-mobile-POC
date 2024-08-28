@@ -41,10 +41,8 @@ class UnconnectedHomePageState extends State<UnconnectedHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFffffff),
-      appBar: MyAppBar("Lycée fictif"),
-      body: SingleChildScrollView(
+    return ScaffoldwithIntegratedSearchBar(
+      child: SingleChildScrollView(
         child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,

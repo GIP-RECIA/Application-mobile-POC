@@ -66,10 +66,8 @@ class HomePageState extends State<HomePage>{
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFffffff),
-      appBar: const MyAppBar('Lycée fictif',),
-      body: SingleChildScrollView(
+    return ScaffoldwithIntegratedSearchBar(
+      child: SingleChildScrollView(
         child: Column(
           children: [
             const SizedBox(
@@ -223,7 +221,6 @@ class HomePageState extends State<HomePage>{
           ],
         ),
       ),
-      bottomNavigationBar: const NavBar(),
     );
   }
 

@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:netocentre_app_poc/pages/components/expansionTile.dart';
 import 'package:netocentre_app_poc/entities/service.dart';
 import 'package:netocentre_app_poc/pages/components/myAppBar.dart';
-import 'package:netocentre_app_poc/pages/components/navBar.dart';
 import 'package:netocentre_app_poc/singletons/servicesList.dart';
 import 'package:slugify/slugify.dart';
 
@@ -69,10 +68,8 @@ class ServicesPageState extends State<ServicesPage>{
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: MyAppBar("Lycée fictif"),
-      body: SingleChildScrollView(
+    return ScaffoldwithIntegratedSearchBar(
+      child: SingleChildScrollView(
         child: Column(
           children: [
             const SizedBox(
@@ -165,7 +162,6 @@ class ServicesPageState extends State<ServicesPage>{
           ],
         ),
       ),
-      bottomNavigationBar: const NavBar(),
     );
   }
 }

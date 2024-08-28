@@ -1,4 +1,166 @@
 import 'package:flutter/material.dart';
+import 'package:netocentre_app_poc/singletons/servicesList.dart';
+import 'package:netocentre_app_poc/entities/service.dart';
+
+import '../../services/portalService.dart';
+import '../serviceWebviews/casServiceWebview.dart';
+import '../serviceWebviews/uPortalServiceWebview.dart';
+import 'navBar.dart';
+
+class ScaffoldwithIntegratedSearchBar extends StatefulWidget {
+  final Widget child; // Le contenu principal de la page
+
+  const ScaffoldwithIntegratedSearchBar({super.key, required this.child});
+
+  @override
+  State<ScaffoldwithIntegratedSearchBar> createState() => _ScaffoldwithIntegratedSearchBarState();
+}
+
+class _ScaffoldwithIntegratedSearchBarState extends State<ScaffoldwithIntegratedSearchBar> {
+  bool _showSearchBar = false;
+  // final List<String> _allItems = Services().servicesList.map((element) => element.text).toList();
+  // List<String> _filteredItems = [];
+  final List<Service> _allItems = Services().servicesList;
+  List<Service> _filteredItems = [];
+
+  void _filterSearchResults(String query) {
+    setState(() {
+      _filteredItems = _allItems.where((item) =>
+          item.text.toLowerCase().contains(query.toLowerCase())).toList();
+    });
+  }
+
+  void _toggleSearchBar() {
+    setState(() {
+      _showSearchBar = !_showSearchBar;
+      if (!_showSearchBar) {
+        _filteredItems.clear();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: CustomSearchAppBar(
+        showSearchBar: _showSearchBar,
+        toggleSearchBar: _toggleSearchBar,
+        onSearch: _filterSearchResults,
+        //filteredItems: _filteredItems,
+        schoolTitle: "Lycée fictif",
+      ),
+      body: Stack(
+        children: [
+          widget.child,
+          if (_showSearchBar && _filteredItems.isNotEmpty)
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                height: (_filteredItems.length < 3 ? _filteredItems.length : 3) * 60.0, // Multiple de 60 - max 180 pour 3 affichés en simultané
+                color: Colors.white, // Couleur de fond pour la liste
+                child: _buildSearchResultsListView(),
+              ),
+            ),
+        ],
+      ),
+      bottomNavigationBar: const NavBar()
+    );
+  }
+
+  Widget _buildSearchResultsListView() {
+    return ListView.builder(
+      itemCount: _filteredItems.length,
+      itemBuilder: (context, index) {
+        final Service service = _filteredItems[index];
+        return Container(
+          //color: Colors.grey.shade600,
+          decoration: const BoxDecoration(
+            color: Color(0xfff3f1f1),
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+          margin: const EdgeInsets.fromLTRB(8,3,8,3),
+          child: ListTile(
+            title: Text(_filteredItems[index].text),
+            onTap: () async {
+              print("Item sélectionné: ${_filteredItems[index]}");
+              if(service.isAuthByUPortal){
+                if(await PortalService().isAuthorizedByUPortal()){
+                  if(context.mounted){
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => UPortalServiceWebview(text: service.text, uri: service.serviceUri)));
+                  }
+                }
+              }
+              else {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => CASServiceWebview(text: service.text, uri: service.serviceUri, fname: service.fname!,)));
+              }
+            },
+          ),
+        );
+      },
+    );
+  }
+}
+
+class CustomSearchAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final bool showSearchBar;
+  final VoidCallback toggleSearchBar;
+  final Function(String) onSearch;
+  //final List<String> filteredItems;
+  final String schoolTitle;
+
+  const CustomSearchAppBar({super.key,
+    required this.showSearchBar,
+    required this.toggleSearchBar,
+    required this.onSearch,
+    //required this.filteredItems,
+    required this.schoolTitle,
+  });
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      backgroundColor: Colors.white,
+      leading: !showSearchBar ? Builder(
+        builder: (BuildContext context) {
+          return IconButton(
+            icon: const Icon(Icons.motion_photos_on_outlined),
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Clicked on App Logo Button')));
+            },
+          );
+        },
+      ) : null,
+      title: showSearchBar
+          ? TextField(
+              decoration: const InputDecoration(
+                hintText: 'Recherche...',
+              ),
+              onChanged: onSearch,
+            )
+          : Text(schoolTitle),
+      actions: [
+        IconButton(
+          icon: Icon(showSearchBar ? Icons.close : Icons.search),
+          onPressed: toggleSearchBar,
+        ),
+        IconButton(
+          icon: const Icon(Icons.info_outline),
+          onPressed: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Clicked on Info Button')));
+          },
+        ),
+      ],
+    );
+  }
+}
 
 class MyAppBar extends StatelessWidget implements PreferredSizeWidget{
 
@@ -52,7 +214,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget{
                       },
                     ),
                   ],
-                ),
+              ),
         ),
     );
   }
