@@ -149,7 +149,6 @@ class LogoRow extends StatelessWidget{
           alignment: Alignment.center,
           child: SvgPicture.network(
             "https://${BaseUrl().uPortalBaseURL}${service.iconUri}",
-            //semanticsLabel: 'My SVG Image',
             height: 50,
             width: 50,
           ),

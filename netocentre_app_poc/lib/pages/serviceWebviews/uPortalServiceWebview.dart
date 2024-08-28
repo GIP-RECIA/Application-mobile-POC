@@ -95,18 +95,6 @@ class UPortalServiceWebviewState extends State<UPortalServiceWebview> {
     return Scaffold(
         body: SafeArea(
             child: Column(children: <Widget>[
-              // TextField(
-              //   decoration: const InputDecoration(prefixIcon: Icon(Icons.search)),
-              //   controller: urlController,
-              //   keyboardType: TextInputType.url,
-              //   onSubmitted: (value) {
-              //     var url = WebUri(value);
-              //     if (url.scheme.isEmpty) {
-              //       url = WebUri("https://www.google.com/search?q=$value");
-              //     }
-              //     webViewController?.loadUrl(urlRequest: URLRequest(url: url));
-              //   },
-              // ),
               Expanded(
                 child: Stack(
                   children: [
@@ -198,18 +186,6 @@ class UPortalServiceWebviewState extends State<UPortalServiceWebview> {
                   ],
                 ),
               ),
-              // ButtonBar(
-              //   alignment: MainAxisAlignment.center,
-              //   children: <Widget>[
-              //     ElevatedButton(
-              //       child: const Icon(Icons.refresh),
-              //       onPressed: () {
-              //         //func get cookie
-              //         getMyCookies();
-              //       },
-              //     ),
-              //   ],
-              // ),
               ButtonBar(
                 alignment: MainAxisAlignment.center,
                 children: <Widget>[

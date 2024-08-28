@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:netocentre_app_poc/pages/homePage.dart';
 import 'package:netocentre_app_poc/pages/servicesPage.dart';
@@ -145,9 +143,6 @@ class NavBarState extends State<NavBar> {
                   print("home");
                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
                 },
-                // style: ButtonStyle(
-                //     backgroundColor: WidgetStatePropertyAll<Color>(Colors.deepOrange)
-                // ),
               ),
               IconButton(
                 icon: const Icon(
@@ -156,20 +151,15 @@ class NavBarState extends State<NavBar> {
                 ),
                 onPressed: () {
                   print("Services list");
-                  // Naviguer vers la page des commandes en cours
                     print("not already on page");
                     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ServicesPage()));
                 },
-                //iconSize: 40,
-                // style: ButtonStyle(
-                //     backgroundColor: WidgetStatePropertyAll<Color>(Colors.deepOrange)
-                // ),
               ),
               IconButton(
                 icon: Container(
                   height: 24,
                   width: 24,
-                  child: FittedBox(
+                  child: const FittedBox(
                     fit: BoxFit.cover,
                     child: ImageIcon(
                       NetworkImage(
@@ -181,8 +171,6 @@ class NavBarState extends State<NavBar> {
                 ),
                 onPressed: () {
                   print("user");
-                  // Naviguer vers la page de l'historique des commandes
-                  //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
                   if (controller.isOpen) {
                     controller.close();
                   } else {
@@ -190,9 +178,6 @@ class NavBarState extends State<NavBar> {
                   }
                 },
                 iconSize: 80,
-                // style: ButtonStyle(
-                //     backgroundColor: WidgetStatePropertyAll<Color>(Colors.deepOrange)
-                // ),
               ),
             ],
           ),

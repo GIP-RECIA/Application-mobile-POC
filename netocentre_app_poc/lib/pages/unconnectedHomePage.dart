@@ -68,7 +68,6 @@ class UnconnectedHomePageState extends State<UnconnectedHomePage> {
                     "à votre environnement numérique de travail (ENT)",
                     style: GoogleFonts.nunito(
                       fontSize: 16,
-                      //fontWeight: FontWeight.w800,
                     ),
                   ),
                 ),

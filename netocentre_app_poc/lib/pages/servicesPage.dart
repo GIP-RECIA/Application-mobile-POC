@@ -51,16 +51,6 @@ class ServicesPageState extends State<ServicesPage>{
   void initState() {
     super.initState();
 
-    // if(ServicesList().list.isEmpty){
-    //   print("services list was empty");
-    //   ServicesList().list.add(Service.CASBased(text: "Espaces Moodle", serviceUri: "https://e-education.recia.fr/moodle", fname: "Moodle", iconUri: "", isFavorite: false));
-    //   ServicesList().list.add(Service.UPortalBased(text: "MenuCantine", serviceUri: "MenuCantine.ctf2/max/render.uP", iconUri: "", isFavorite: false));
-    //   ServicesList().list.add(Service.UPortalBased(text: "ESUP FileManager", serviceUri: "esup-filemanager", iconUri: "", isFavorite: false));
-    //   ServicesList().list.add(Service.UPortalBased(text: "Mediacentre", serviceUri: "Mediacentre", iconUri: "", isFavorite: false));
-    //   ServicesList().list.add(Service.UPortalBased(text: "ESUP Pod", serviceUri: "ESUPpod", iconUri: "", isFavorite: false));
-    // }
-
-
     if(UserInfo().firstname == ""){
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoadingPage(callbackWidget: ServicesPage())));
     }

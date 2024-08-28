@@ -91,10 +91,6 @@ class LoginService {
      if(credentials.containsKey("refresh_token")){
        TokenManager().setRefreshToken(credentials["refresh_token"], flush: true);
      }
-     // if(credentials.containsKey("TGT")){
-     //   print("Tu ne devrais pas être la");
-     //   TokenManager().setTGT(credentials["TGT"], flush: true);
-     // }
      print("login headers : ${res.headers}");
    }
    else{

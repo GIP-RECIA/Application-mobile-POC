@@ -56,9 +56,6 @@ class PortalService{
 
       print(res.statusCode);
       if(res.statusCode == 200) {
-        // for(int i = 0; i < res.body.length; i += 800){
-        //   print(res.body.substring(i, i+800 > res.body.length ? res.body.length : i+800));
-        // }
 
         /// Parse json and get portlets fname
 
@@ -80,7 +77,6 @@ class PortalService{
               // get icon  uri
               if(portlet["parameters"].containsKey("mobileIconUrl")){
                 portletIconUri = portlet["parameters"]["mobileIconUrl"]["value"];
-                //portletIconUri = portlet["parameters"]["iconUrl"]["value"];
                 print("portlet ${portlet["title"]} icon url : $portletIconUri");
 
               }

@@ -18,8 +18,6 @@ class ScaffoldwithIntegratedSearchBar extends StatefulWidget {
 
 class _ScaffoldwithIntegratedSearchBarState extends State<ScaffoldwithIntegratedSearchBar> {
   bool _showSearchBar = false;
-  // final List<String> _allItems = Services().servicesList.map((element) => element.text).toList();
-  // List<String> _filteredItems = [];
   final List<Service> _allItems = Services().servicesList;
   List<Service> _filteredItems = [];
 
@@ -47,7 +45,6 @@ class _ScaffoldwithIntegratedSearchBarState extends State<ScaffoldwithIntegrated
         showSearchBar: _showSearchBar,
         toggleSearchBar: _toggleSearchBar,
         onSearch: _filterSearchResults,
-        //filteredItems: _filteredItems,
         schoolTitle: "Lycée fictif",
       ),
       body: Stack(
@@ -76,7 +73,6 @@ class _ScaffoldwithIntegratedSearchBarState extends State<ScaffoldwithIntegrated
       itemBuilder: (context, index) {
         final Service service = _filteredItems[index];
         return Container(
-          //color: Colors.grey.shade600,
           decoration: const BoxDecoration(
             color: Color(0xfff3f1f1),
             borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -108,14 +104,12 @@ class CustomSearchAppBar extends StatelessWidget implements PreferredSizeWidget 
   final bool showSearchBar;
   final VoidCallback toggleSearchBar;
   final Function(String) onSearch;
-  //final List<String> filteredItems;
   final String schoolTitle;
 
   const CustomSearchAppBar({super.key,
     required this.showSearchBar,
     required this.toggleSearchBar,
     required this.onSearch,
-    //required this.filteredItems,
     required this.schoolTitle,
   });
 
