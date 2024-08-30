@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:netocentre_login_poc/pages/loadingPage.dart';
 import 'package:netocentre_login_poc/singletons/dummySingleton.dart';
 
 class SyncNeedingPage extends StatefulWidget {

@@ -10,6 +10,7 @@ import 'loginService.dart';
 class PortalService{
 
 
+  /// Custom HTTP Client who ignore SSL - Dev Only
   http.Client ignoreSslClient() {
     var ioClient = HttpClient(context: SecurityContext(withTrustedRoots: false));
     ioClient.badCertificateCallback = ((cert, host, port) => true);
@@ -17,6 +18,8 @@ class PortalService{
     return IOClient(ioClient);
   }
 
+
+  /// Check if applicant (request or webview) can use a valid JSESSIONID and generate a new JSESSIONID if not
   Future<bool> isAuthorizedByUPortal() async{
     if(TokenManager().JSESSIONID != ""){
       return true;
@@ -26,6 +29,8 @@ class PortalService{
     }
   }
 
+
+  /// Get all portlets from uPortal
   Future<void> getAllPortlets() async {
     print("getting portlets");
 
@@ -51,11 +56,8 @@ class PortalService{
 
       print(res.statusCode);
       if(res.statusCode == 200) {
-        // for(int i = 0; i < res.body.length; i += 800){
-        //   print(res.body.substring(i, i+800 > res.body.length ? res.body.length : i+800));
-        // }
 
-        /// Parse json and get portlets fname
+        // Parse json and get portlets fname
 
         final dynamic jsonSubcategories  = json.decode(res.body)["registry"]["categories"][0]["subcategories"];
 
@@ -96,6 +98,8 @@ class PortalService{
     }
   }
 
+
+  /// Get current user info
   Future<dynamic> getUserInfo() async{
     print("getting user infos");
 
@@ -150,6 +154,8 @@ class PortalService{
     }
   }
 
+
+  /// Manage the MediaCentre Workflow
   Future<void> mediacentreWorkflow() async {
     String bearer = await getUserInfoMediacentre();
 
@@ -190,6 +196,8 @@ class PortalService{
     }
   }
 
+
+  /// Get current user info who MediaCentre needs
   Future<String> getUserInfoMediacentre() async{
     print("getting user infos - mediacentre");
 
@@ -231,7 +239,8 @@ class PortalService{
     }
   }
 
-  /// MediaCentre
+
+  /// Get MediaCentre groups
   Future<List<dynamic>> getGroups(String bearer) async{
     print("getting user infos");
 
@@ -282,7 +291,8 @@ class PortalService{
     }
   }
 
-  /// MediaCentre
+
+  /// Get MediaCentre groups regex
   Future<String> getGroupsRegexFromConfig(String bearer) async{
     print("getting user infos");
 
@@ -327,7 +337,8 @@ class PortalService{
     }
   }
 
-  /// MediaCentre
+
+  /// Get MediaCentre ressources
   Future<List<dynamic>> getRessources(String bearer, List<String> userGroups) async{
     print("getting user infos");
 
@@ -379,7 +390,8 @@ class PortalService{
     }
   }
 
-  /// MediaCentre
+
+  /// Get MediaCentre favorite ressource ids
   Future<Map<String,dynamic>> getFavoriteRessourceIds(String bearer) async{
     print("getting user infos");
 
@@ -426,46 +438,13 @@ class PortalService{
   }
 
 
+  /// uPortal Logout
   Future<String> portalLogout() async {
     print("portal logout");
-
-    // final client = ignoreSslClient();
-    //
-    // Uri request = Uri.https(
-    //     BaseUrl().uPortalBaseURL,
-    //     "/portail/Logout",
-    //     {}
-    // );
-    //
-    // print("getting portlet request : $request");
-    // print("JSESSIONID=${TokenManager().JSESSIONID}");
-    //
-    // if(await isAuthorizedByUPortal()){
-    //   final http.Response res = await client.get(
-    //     request,
-    //     headers: <String, String>{
-    //       'Cookie': 'JSESSIONID=${TokenManager().JSESSIONID}; clusterIDPortail=${TokenManager().idPortal}',
-    //       'Host': BaseUrl().uPortalBaseURL
-    //     },
-    //   );
-    //
-    //   print(res.statusCode);
-    //   if(res.statusCode == 200) {
-    //     return res.body;
-    //   }
-    //   else{
-    //     print("on a un problème là ! :'(");
-    //     return "";
-    //   }
-    // }
-    // else{
-    //   print("JSESSIONID Empty !");
-    //   return "";
-    // }
 
     TokenManager().setJSESSIONID("");
     TokenManager().setIdPortal("", flush: true);
 
-    return "JSESSIONID successfully cleared";
+    return "JSESSIONID and idPortal successfully cleared";
   }
 }

@@ -15,8 +15,8 @@ class LoginService {
    return IOClient(ioClient);
  }
 
- /// Parser - JSESSIONID & idPortal
 
+ /// Parser - JSESSIONID & idPortal
  ({String jsessionid, String idportal}) uPortalLoginParser(HttpClientResponse response){
 
    String jsessionidCookie = "";
@@ -56,6 +56,7 @@ class LoginService {
  }
 
 
+ /// Allows connection to CAS server using the OAuth2.0 protocol
  Future<Map<String, dynamic>> login(String OCToken) async {
    print("in login");
 
@@ -90,10 +91,6 @@ class LoginService {
      if(credentials.containsKey("refresh_token")){
        TokenManager().setRefreshToken(credentials["refresh_token"], flush: true);
      }
-     // if(credentials.containsKey("TGT")){
-     //   print("Tu ne devrais pas êàtre la");
-     //   TokenManager().setTGT(credentials["TGT"], flush: true);
-     // }
      print("login headers : ${res.headers}");
    }
    else{
@@ -104,6 +101,8 @@ class LoginService {
    return credentials;
  }
 
+
+ /// Allows connection to uPortal server with automatic redirects
  Future<bool> uPortalLogin() async {
    print("in uPortal login");
 
@@ -141,7 +140,9 @@ class LoginService {
    return false;
  }
 
+
  /// Used to earn the JSESSIONID
+ /// Allows connection to uPortal server with manual redirects
  Future<bool> unstackedUPortalLogin() async {
 
    // init variables
@@ -183,7 +184,7 @@ class LoginService {
        //Configure the new request
        request = await client.getUrl(uri.resolve(location));
 
-       /// PARSE JSESSIONID & idPortal
+       // PARSE JSESSIONID & idPortal
 
        print("\nResponse $requestCounter :");
        print(response.statusCode);
@@ -218,8 +219,8 @@ class LoginService {
      }
    }
 
-   /// Last response
-   /// Parse last JSESSIONID & idPortal
+   // Last response
+   // Parse last JSESSIONID & idPortal
    print("\nResponse $requestCounter :");
    print(response.statusCode);
    print("response headers : ${response.headers["set-cookie"]}");
@@ -248,6 +249,7 @@ class LoginService {
  }
 
 
+ /// Refresh connection to CAS server using the OAuth2.0 protocol
  Future<Map<String, dynamic>> refresh(String refreshToken) async {
    print("in refresh");
 
@@ -293,7 +295,9 @@ class LoginService {
    return credentials;
  }
 
- /// Pratique pour le multi-domaine
+
+ /// Get the current etab
+ /// Useful for multi-domain
  Future<Map<String, dynamic>> profile() async {
    print("in profile");
 
@@ -330,6 +334,8 @@ class LoginService {
    return credentials;
  }
 
+
+ /// Giving more informations about Access Token & Refresh Token
  Future<Map<String, dynamic>> tokenIntrospect({isAccess = false}) async {
    print("in token introspect");
 
@@ -371,11 +377,12 @@ class LoginService {
    else{
      credentials = {};
    }
-   //credentials["statusCode"] = res.statusCode;
    print("token introspect creds : $credentials");
    return credentials;
  }
 
+
+ /// Revoke Access Token
  Future<int> revokeToken() async {
    print("in revoke token");
 
@@ -402,7 +409,6 @@ class LoginService {
    );
 
    print(res.statusCode);
-   //return res;
    if(res.statusCode == 200) {
      // credentials = json.decode(res.body);
      // print("refresh headers : ${res.headers}");
@@ -414,12 +420,12 @@ class LoginService {
    else{
      // credentials = {};
    }
-   //credentials["statusCode"] = res.statusCode;
-   // print("refresh creds : $credentials");
    return res.statusCode;
  }
 
- /// Pratique pour le multi-domaine
+
+ /// Get the current etab
+ /// Useful for multi-domain
  Future<Map<String, dynamic>> getEtab(String ESCOSIRENCourant) async {
    print("in get etab");
 
@@ -449,7 +455,6 @@ class LoginService {
      credentials = {};
    }
    print("get etab creds : $credentials");
-   //print("esco siren courant : ${credentials["attributes"]["ESCOSIRENCourant"]}");
    return credentials;
  }
 }

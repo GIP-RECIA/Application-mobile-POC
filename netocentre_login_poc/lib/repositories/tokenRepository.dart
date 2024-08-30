@@ -44,7 +44,6 @@ class TokenRepository {
         },
         conflictAlgorithm: ConflictAlgorithm.replace
     );
-    //print("row added");
   }
 
   /// Update DB tokens
@@ -65,7 +64,6 @@ class TokenRepository {
       where: 'TGT = ?',
       whereArgs: [TokenManager().TGT],
     );
-    //print("row updated");
   }
 
   /// Synchronize tokens from TokenManager singleton with tokens who are in the database

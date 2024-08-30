@@ -59,21 +59,21 @@ class CASServiceWebviewState extends State<CASServiceWebview> {
     );
 
     pullToRefreshController = kIsWeb
-        ? null
-        : PullToRefreshController(
-      settings: PullToRefreshSettings(
-        color: Colors.blue,
-      ),
-      onRefresh: () async {
-        if (defaultTargetPlatform == TargetPlatform.android) {
-          webViewController?.reload();
-        } else if (defaultTargetPlatform == TargetPlatform.iOS) {
-          webViewController?.loadUrl(
-              urlRequest:
-              URLRequest(url: await webViewController?.getUrl()));
-        }
-      },
-    );
+      ? null
+      : PullToRefreshController(
+        settings: PullToRefreshSettings(
+          color: Colors.blue,
+        ),
+        onRefresh: () async {
+          if (defaultTargetPlatform == TargetPlatform.android) {
+            webViewController?.reload();
+          } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+            webViewController?.loadUrl(
+                urlRequest:
+                URLRequest(url: await webViewController?.getUrl()));
+          }
+        },
+      );
   }
 
   @override
@@ -81,18 +81,6 @@ class CASServiceWebviewState extends State<CASServiceWebview> {
     return Scaffold(
         body: SafeArea(
             child: Column(children: <Widget>[
-              // TextField(
-              //   decoration: const InputDecoration(prefixIcon: Icon(Icons.search)),
-              //   controller: urlController,
-              //   keyboardType: TextInputType.url,
-              //   onSubmitted: (value) {
-              //     var url = WebUri(value);
-              //     if (url.scheme.isEmpty) {
-              //       url = WebUri("https://www.google.com/search?q=$value");
-              //     }
-              //     webViewController?.loadUrl(urlRequest: URLRequest(url: url));
-              //   },
-              // ),
               Expanded(
                 child: Stack(
                   children: [
@@ -183,18 +171,6 @@ class CASServiceWebviewState extends State<CASServiceWebview> {
                   ],
                 ),
               ),
-              // ButtonBar(
-              //   alignment: MainAxisAlignment.center,
-              //   children: <Widget>[
-              //     ElevatedButton(
-              //       child: const Icon(Icons.refresh),
-              //       onPressed: () {
-              //         //func get cookie
-              //         getMyCookies();
-              //       },
-              //     ),
-              //   ],
-              // ),
               ButtonBar(
                 alignment: MainAxisAlignment.center,
                 children: <Widget>[

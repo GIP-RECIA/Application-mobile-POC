@@ -1,4 +1,5 @@
 
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -18,7 +19,6 @@ class AuthenticationInAppBrowser extends InAppBrowser {
   AuthenticationInAppBrowser(this.context);
 
   @override
-  // TODO: implement webViewController
   InAppWebViewController? get webViewController => super.webViewController;
 
   LoginService loginService = LoginService();
@@ -43,6 +43,36 @@ class AuthenticationInAppBrowser extends InAppBrowser {
     }
   }
 
+  /// Whe we use the OAuth2.0 protocol - can be applied for OIDC protocol
+  Future<void> oauthTokenCatching(WebUri url) async {
+    print("url who potentially have OCToken : ${url.toString()}");
+    OCToken = getOCToken(url)!;
+    print("OCToken : $OCToken");
+    if(OCToken != ""){
+      cookieManager.removeSessionCookies();
+      close();
+      Map<String, dynamic> res = await loginService.login(OCToken);
+      if(res.isNotEmpty){
+        loginService.tokenIntrospect();
+        print("In Login Page : ${TokenManager().toString()}");
+        navigateToHomePage();
+      }
+    }
+  }
+
+  /// When we use only CAS protocol
+  Future<void> casTokenCatching() async {
+    if(TokenManager().TGT != ""){
+      print("tgt catched");
+      cookieManager.removeSessionCookies();
+      close();
+      navigateToHomePage();
+    }
+    else{
+      print("tgt not catched");
+    }
+  }
+
   @override
   Future onBrowserCreated() async {
     print("Browser Created!");
@@ -50,34 +80,12 @@ class AuthenticationInAppBrowser extends InAppBrowser {
 
   @override
   Future onLoadStart(url) async {
-    await getMyCookies();
+    await getMyCookies(); // get cookies of the newly loaded page
     print("Started $url");
     if(url != null){
       if(url.toString().contains("https://${BaseUrl().casBaseURL}/cas")){
-        // print("url who potentially have OCToken : ${url.toString()}");
-        // OCToken = getOCToken(url)!;
-        // print("OCToken : $OCToken");
-        // if(OCToken != ""){
-        //   cookieManager.removeSessionCookies();
-        //   close();
-        //   Map<String, dynamic> res = await loginService.login(OCToken);
-        //   if(res.isNotEmpty){
-        //     loginService.tokenIntrospect();
-        //     print("In Login Page : ${TokenManager().toString()}");
-        //     navigateToHomePage();
-        //   }
-        // }
-
-        /// When we use only CAS protocol - without OAuth2.0 or OIDC for example...
-        if(TokenManager().TGT != ""){
-          print("tgt catched");
-          cookieManager.removeSessionCookies();
-          close();
-          navigateToHomePage();
-        }
-        else{
-          print("tgt not catched");
-        }
+        //oauthTokenCatching(url);
+        casTokenCatching();
       }
     }
   }
@@ -137,7 +145,7 @@ class LoginPageState extends State<LoginPage> {
   final settings = InAppBrowserClassSettings(
       browserSettings: InAppBrowserSettings(hideUrlBar: false),
       webViewSettings: InAppWebViewSettings(
-          javaScriptEnabled: true, isInspectable: kDebugMode, useShouldInterceptRequest: true));
+          javaScriptEnabled: true, isInspectable: kDebugMode, useShouldInterceptRequest: true, userAgent: HttpClient().userAgent!));
 
 
   @override
@@ -160,7 +168,10 @@ class LoginPageState extends State<LoginPage> {
             ElevatedButton(
               onPressed: () {
                   browser.openUrlRequest(
+                      // OAuth2.0 Version
                       //urlRequest: URLRequest(url: WebUri("https://${BaseUrl().casBaseURL}/cas/oauth2.0/authorize?response_type=code&redirect_uri=https://${BaseUrl().casBaseURL}/cas&client_id=client&scope=profile")),
+
+                      // CAS Version
                       urlRequest: URLRequest(url: WebUri("https://${BaseUrl().casBaseURL}/cas/login?service=https://${BaseUrl().casBaseURL}/cas")),
                       settings: settings);
               },
