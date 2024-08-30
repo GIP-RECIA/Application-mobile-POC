@@ -9,6 +9,7 @@ import '../serviceWebviews/casServiceWebview.dart';
 import '../serviceWebviews/uPortalServiceWebview.dart';
 import 'navBar.dart';
 
+// TODO: call from unconnected home page needs some modification
 class ScaffoldwithIntegratedSearchBar extends StatefulWidget {
   final Widget child; // Le contenu principal de la page
 
