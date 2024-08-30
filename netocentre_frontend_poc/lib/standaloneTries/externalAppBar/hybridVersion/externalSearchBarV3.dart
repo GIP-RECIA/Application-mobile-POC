@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 /// In this version, the logic of the search bar is implemented in an intermediate class
 
+/// Intermediate class
 class ScaffoldwithIntegratedSearchBar extends StatefulWidget {
   final Widget child; // Le contenu principal de la page
 
