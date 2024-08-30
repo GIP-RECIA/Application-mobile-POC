@@ -2,21 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:netocentre_app_poc/pages/homePage.dart';
 import 'package:netocentre_app_poc/pages/loadingPage.dart';
 import 'package:netocentre_app_poc/pages/unconnectedHomePage.dart';
-import 'package:netocentre_app_poc/repositories/tokenRepository.dart';
-import 'package:netocentre_app_poc/services/loginService.dart';
+import 'package:netocentre_app_poc/services/portalService.dart';
 import 'package:netocentre_app_poc/singletons/tokenManager.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   print("token manager before loaded : ${TokenManager().toString()}");
-  await TokenRepository().getLastValidRefreshToken();
-  // if we get a valid Refresh Token from Database
-  if(TokenManager().refreshToken != ""){
-    // if the associated Access Token is expired
-    if(TokenManager().accessTokenExpiresDate.isBefore(DateTime.now())){
-      // refresh Access Token & associated TGT TODO: not working currently
-      await LoginService().refresh(TokenManager().refreshToken);
+  // if we get a valid TGT from Database TODO: Need to verify if he's not expired
+  if(TokenManager().TGT != ""){
+    if(TokenManager().JSESSIONID == ""){
+      await PortalService().isAuthorizedByUPortal(); // Generate a new JSESSIONID
     }
   }
   print("token manager after loaded : ${TokenManager().toString()}");
@@ -31,7 +27,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    if(TokenManager().refreshToken != "") { // refresh token default value
+    if(TokenManager().TGT != "") { // TGT default value
       return const MaterialApp(
         title: 'Netocentre App POC',
         debugShowCheckedModeBanner: false,

@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -30,7 +32,7 @@ class UnconnectedHomePageState extends State<UnconnectedHomePage> {
   final settings = InAppBrowserClassSettings(
       browserSettings: InAppBrowserSettings(hideUrlBar: false),
       webViewSettings: InAppWebViewSettings(
-          javaScriptEnabled: true, isInspectable: kDebugMode, useShouldInterceptRequest: true));
+          javaScriptEnabled: true, isInspectable: kDebugMode, useShouldInterceptRequest: true, userAgent: HttpClient().userAgent!));
 
 
   @override
@@ -78,7 +80,7 @@ class UnconnectedHomePageState extends State<UnconnectedHomePage> {
                 child: ElevatedButton(
                     onPressed: () {
                       browser.openUrlRequest(
-                          urlRequest: URLRequest(url: WebUri("https://${BaseUrl().casBaseURL}/cas/oauth2.0/authorize?response_type=code&redirect_uri=https://${BaseUrl().casBaseURL}/cas&client_id=client&scope=profile")),
+                          urlRequest: URLRequest(url: WebUri("https://${BaseUrl().casBaseURL}/cas/login?service=https://${BaseUrl().casBaseURL}/cas")),
                           settings: settings);
                     },
                     child: const Text("Se connecter")
@@ -133,7 +135,6 @@ class UnconnectedHomePageState extends State<UnconnectedHomePage> {
 
 class AuthenticationInAppBrowser extends InAppBrowser {
 
-  late String OCToken;
   BuildContext context;
 
   CookieManager cookieManager = CookieManager.instance();
@@ -144,11 +145,6 @@ class AuthenticationInAppBrowser extends InAppBrowser {
   InAppWebViewController? get webViewController => super.webViewController;
 
   LoginService loginService = LoginService();
-
-
-  String? getOCToken(WebUri url){
-    return url.queryParameters["code"];
-  }
 
   void navigateToHomePage(){
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const LoadingPage(callbackWidget: HomePage())));
@@ -173,22 +169,14 @@ class AuthenticationInAppBrowser extends InAppBrowser {
 
   @override
   Future onLoadStart(url) async { // used to catch CAS "connected page"
-    getMyCookies();
+    await getMyCookies();
     print("Started $url");
     if(url != null){
       if(url.toString().contains("https://${BaseUrl().casBaseURL}/cas")){
-        print("url who potentially have OCToken : ${url.toString()}");
-        OCToken = getOCToken(url)!; // parse OC Token from the url
-        print("OCToken : $OCToken");
-        if(OCToken != ""){
+        if(TokenManager().TGT != ""){
           cookieManager.removeSessionCookies(); // remove session cookies to avoid lost cookies
           close(); // close the navigator
-          Map<String, dynamic> res = await loginService.login(OCToken);
-          if(res.isNotEmpty){
-            await loginService.tokenIntrospect(); // Used to earn refresh token expires date
-            print("Token Manager - Data at Login Page : ${TokenManager().toString()}"); // print our tokens at this time
-            navigateToHomePage();
-          }
+          navigateToHomePage();
         }
       }
     }
