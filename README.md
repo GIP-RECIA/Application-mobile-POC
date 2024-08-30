@@ -38,6 +38,9 @@ To install the project :
 flutter pub get
 ```
 
+_Optional:_
+If you open and work on the project with Android Studio, you can optionally install the Flutter et Dart plugins.
+
 
 ## Run
 To run the differents POCs :
