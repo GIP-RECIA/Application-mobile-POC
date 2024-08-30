@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../services/portalService.dart';
+import '../../singletons/tokenManager.dart';
 import '../serviceWebviews/casServiceWebview.dart';
 import '../serviceWebviews/uPortalServiceWebview.dart';
+import '../unconnectedHomePage.dart';
 
 
 class WebviewButton extends StatelessWidget {
@@ -31,8 +33,12 @@ class WebviewButton extends StatelessWidget {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => UPortalServiceWebview(text: text, uri: serviceUri))),
               }
             }
-            else{
-              print("Unauthorized - JSESSIONID not got")
+            else {
+              TokenManager().reset(flush: true),
+              if(context.mounted){
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const UnconnectedHomePage())),
+                print("Unauthorized - JSESSIONID not got")
+              }
             }
           });
     }

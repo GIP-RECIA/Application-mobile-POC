@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:netocentre_app_poc/pages/unconnectedHomePage.dart';
 import 'package:netocentre_app_poc/singletons/servicesList.dart';
 import 'package:netocentre_app_poc/entities/service.dart';
+import 'package:netocentre_app_poc/singletons/tokenManager.dart';
 
 import '../../services/portalService.dart';
 import '../serviceWebviews/casServiceWebview.dart';
@@ -86,6 +88,12 @@ class _ScaffoldwithIntegratedSearchBarState extends State<ScaffoldwithIntegrated
                 if(await PortalService().isAuthorizedByUPortal()){
                   if(context.mounted){
                     Navigator.push(context, MaterialPageRoute(builder: (context) => UPortalServiceWebview(text: service.text, uri: service.serviceUri)));
+                  }
+                }
+                else {
+                  TokenManager().reset(flush: true);
+                  if(context.mounted){
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const UnconnectedHomePage()));
                   }
                 }
               }

@@ -88,13 +88,18 @@ class TokenManager {
     }
   }
 
-  void reset() {
+  void reset({bool flush = false}) {
     _accessToken = "";
     _refreshToken = "";
     _TGT = "";
     _JSESSIONID = "";
+    _idPortal = "";
     _accessTokenExpiresDate = DateTime.now();
     _refreshTokenExpiresDate = DateTime.now();
+
+    if(flush){
+      TokenRepository().flushTokens();
+    }
   }
 
   @override

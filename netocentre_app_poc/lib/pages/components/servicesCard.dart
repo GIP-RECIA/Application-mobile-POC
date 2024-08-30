@@ -4,8 +4,10 @@ import 'package:netocentre_app_poc/entities/service.dart';
 import 'package:netocentre_app_poc/singletons/baseUrl.dart';
 
 import '../../services/portalService.dart';
+import '../../singletons/tokenManager.dart';
 import '../serviceWebviews/casServiceWebview.dart';
 import '../serviceWebviews/uPortalServiceWebview.dart';
+import '../unconnectedHomePage.dart';
 
 class ServicesCard extends StatelessWidget{
 
@@ -43,6 +45,12 @@ class ServicesCard extends StatelessWidget{
             if(await PortalService().isAuthorizedByUPortal()){
               if(context.mounted){
                 Navigator.push(context, MaterialPageRoute(builder: (context) => UPortalServiceWebview(text: service.text, uri: service.serviceUri)));
+              }
+            }
+            else {
+              TokenManager().reset(flush: true);
+              if(context.mounted){
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const UnconnectedHomePage()));
               }
             }
           }
